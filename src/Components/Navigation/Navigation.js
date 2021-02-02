@@ -1,4 +1,4 @@
-import Reat from 'react';
+import React from 'react';
 import { Link } from 'react-router-dom';
 
 function Navigation(props) {
@@ -8,6 +8,7 @@ function Navigation(props) {
                 <li><Link to="/">Home</Link></li>
                 <li><Link to="/clock">Clock</Link></li>
                 <li><Link to="/contact">Contact</Link></li>
+                <li><Link to="/jeopardy">Jeopardy</Link></li>
             </ul>
         </div>
     );

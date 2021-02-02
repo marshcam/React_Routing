@@ -1,17 +1,21 @@
+import { render } from '@testing-library/react';
 import React, { Component } from 'react';
 
 //import our service
-import JeopardyService from "../../jeopardyService";
+import jeopardyService from "../../jeopardyService";
 
-class Jeopardy extends Component {
+class jeopardy extends Component {
   
     //set our initial state and set up our service as this.client on this component
   constructor(props){
     super(props);
-    this.client = new JeopardyService();
+    this.client = new jeopardyService();
     this.state = {
       data: {},
-      score: 0
+      score: 0,
+      formData: {
+        answer: "",
+      }
     }
   }
   
@@ -24,18 +28,93 @@ class Jeopardy extends Component {
     })
   }
   
+  handleChange = (event) => {
+    const formData = {...this.state.formData}
+    console.log(formData)
+    console.log(event.target)
+    formData[event.target.name] = event.target.value
+    this.setState({formData })
+}
+
+handleSubmit = (event) => {
+    event.preventDefault();
+    
+    if (this.state.data.answer === this.state.formData.answer) {
+          console.log('Match')
+          this.setState( (state, props) => ( {
+            score: state.score + state.data.value,
+            formData: {
+          answer:""
+            }
+          }))
+    } else {
+      console.log('No Match')
+      this.setState( ( state, props) => ({
+        score: state.score - state.data.value,
+        formData: {
+          answer:""
+            }
+      }))
+
+    }
+    
+    this.getNewQuestion();
+    
+}
+  
   //when the component mounts, get a the first question
   componentDidMount() {
     this.getNewQuestion();
   }
   
   //display the results on the screen
+  
+
   render() {
+    console.log(this.state.data) 
+    
+    if (!(this.state.data.category))  {
+     return <div>Loading</div>;
+      }
+      
     return (
       <div>
-        {JSON.stringify(this.state.data)}
+      <div>
+        <label>Question: </label>
+        <p>{this.state.data.question}</p>
+      </div>  
+      <div>
+        <label>Value:</label>
+        <p>{this.state.data.value}</p>
       </div>
-    );
-  }
-}
-export default Jeopardy;
+      <div>
+        <label>Category</label>
+        <p>{this.state.data.category.title}</p>
+      </div>
+      <div>
+        <label>score</label>
+        <p>{this.state.score}</p>
+      </div>
+    
+
+<form onSubmit={this.handleSubmit}>
+    <div>
+    <label htmlFor='answer'>Answer</label>
+    <input 
+        type='text'
+        name='answer'
+        value={this.state.formData.answer}
+        onChange={this.handleChange}
+         />
+</div>
+
+<button>Submit</button>
+</form>
+    
+</div>
+    
+    
+
+    )
+}}
+export default jeopardy;
